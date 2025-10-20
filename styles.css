@@ -8,10 +8,10 @@ body {
     height: 100vh;
     display: flex;
     justify-content: center; 
-    align-items: center;    
+    align-items: center; 
     overflow: hidden; 
-    font-family: sans-serif; 
-    background-color: black; /* สำรอง */
+    font-family: 'Inter', sans-serif; /* เปลี่ยน Font Family เพื่อให้ดูโมเดิร์น */
+    background-color: #111827; /* สีดำเข้มของ Tailwind */
 }
 
 /* =============================== */
@@ -27,51 +27,146 @@ body {
     height: auto;
     z-index: 1; 
     
+    /* Center the video */
     transform: translate(-50%, -50%);
     left: 50%;
     top: 50%;
     
-    /* V2: ลดความสว่างลงเหลือ 40% และปรับคอนทราสต์เล็กน้อยเพื่อลดอาการปวดตา */
+    /* V2: ลดความสว่างลงเหลือ 65% และปรับคอนทราสต์เล็กน้อยเพื่อลดอาการปวดตา */
     filter: 
         /* ทำให้เป็นขาวดำ */
         brightness(65%) 
-        contrast(90%);  
+        contrast(90%);  
 }
 
 /* =============================== */
-/* 3. การ์ดโปรไฟล์ และ เงาเรืองแสง */
+/* 3. การ์ดโปรไฟล์ (ปรับให้ยาวขึ้น, Translucent Blue) */
 /* =============================== */
 .profile-card {
     position: relative;
     z-index: 2; 
     text-align: center; 
-    color: #ffffff99; /* V2: สีข้อความหลักสีขาวลดความทึบแสงเล็กน้อย */
+    color: #ffffff99; 
     display: flex;
     flex-direction: column;
     align-items: center; 
-    /* V2: เงาเรืองแสงสีขาวเริ่มต้น (ลดความเข้มลงมาก) */
-    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3))
-        drop-shadow(0 0 6px rgba(200, 200, 200, 0.15));
-    transition: filter 0.5s ease; 
+    
+    /* 🔥 ปรับให้ยาวขึ้นและเว้นพื้นที่ด้านบนสำหรับปุ่มควบคุม */
+    padding: 70px 40px 40px; /* Taller padding */
+    border-radius: 15px; /* ปรับความโค้ง */
+    
+    /* 🔥 ธีม Windows 11 โปร่งแสงสีฟ้าอ่อน */
+    background-color: rgba(135, 228, 235, 0.05); /* สีฟ้าอ่อนโปร่งแสง */
+    /* ** ลบ backdrop-filter ออกตามคำขอ ให้เป็นแบบจางๆ ไม่เบลอ ** */
+    border: 1px solid rgba(135, 228, 235, 0.2); /* ขอบบางๆ */
+    
+    /* เพิ่มเงาให้กับตัวการ์ดเพื่อความลึก (Win11 style) */
+    box-shadow: 0 4px 60px rgba(0, 0, 0, 0.3);
+
+    filter: none;
+    transition: all 0.5s ease; 
+    /* ทำให้การ์ดมีขนาดจำกัดและตอบสนองได้ดีขึ้น */
+    max-width: 400px; 
+    width: 90%;
+}
+
+/* 🔥 กรอบเรืองแสงรอบการ์ดโปรไฟล์ (ปรับให้เข้าธีม Win11 มากขึ้น) */
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* 🚨 ปรับขอบโค้งให้เท่ากับการ์ด (15px) */
+    border-radius: 15px; 
+    /* 🚨 ปรับ: ใช้เส้นขอบที่บางและขาวกว่าเพื่อลุค "Glassy" */
+    border: 2px solid rgba(255, 255, 255, 0.2); 
+    z-index: -1; 
+    
+    /* 🚨 ปรับ: Base Box Shadow (นุ่มนวลและเน้นแสงภายใน) */
+    box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                inset 0 0 5px rgba(255, 255, 255, 0.05);
+    
+    /* ใช้ Keyframe เดิมสำหรับกรอบเรืองแสง */
+    animation: frame-pulse 4s infinite ease-in-out alternate;
+}
+
+/* =============================== */
+/* 🔥 4. UI ปุ่มควบคุมหน้าต่าง (Window 11 Style - Aesthetic Only) */
+/* =============================== */
+
+.window-controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 0; 
+    height: 35px; /* **ปรับความสูงให้ใหญ่ขึ้นเล็กน้อย** */
+    align-items: center;
+    z-index: 5;
+    /* แถบด้านบนโปร่งแสงเล็กน้อย */
+    background: rgba(0, 0, 0, 0.05); 
+    border-top-right-radius: 15px; 
+    overflow: hidden; /* เพื่อให้ปุ่มปิดมุมโค้งสวยงาม */
+}
+
+.control-button {
+    width: 45px; /* กว้างกว่าเดิมนิดหน่อย */
+    height: 35px; /* **ปรับความสูงให้เท่ากับ window-controls** */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* **ปรับขนาดฟอนต์ให้ใหญ่ขึ้น** */
+    font-weight: 900;
+    color: #ffffff99;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s; /* เพิ่ม box-shadow ใน transition */
+    cursor: pointer; /* **เปลี่ยนเป็น pointer ให้รู้สึกว่ากดได้** */
+    user-select: none;
+}
+
+/* 🔥 อัพเดท: ปุ่มย่อ/ขยาย (ไม่ใช่ปุ่มปิด) - ธีมสีฟ้าอ่อน + เรืองแสง */
+.control-button:not(.close):hover {
+    background-color: rgba(135, 228, 235, 0.25); /* พื้นหลังสีฟ้าอ่อนโปร่งแสง */
+    color: #ffffff;
+    
+    /* แสงเรืองรองสีฟ้าอ่อน */
+    box-shadow: 0 0 5px rgba(135, 228, 235, 0.9), 
+                inset 0 0 5px rgba(135, 228, 235, 0.5);
+}
+
+/* 🔥 อัพเดท: ปุ่มปิด - สีแดงอ่อน + เรืองแสง */
+.close {
+    border-top-right-radius: 15px; /* ให้มุมขวาบนของปุ่มปิดโค้งตามการ์ด */
+}
+
+.close:hover {
+    background-color: #ff5555; /* **ใช้สีแดงอ่อนขึ้น (#ff5555)** */
+    color: white;
+    
+    /* **แสงเรืองรองสีแดงอ่อน** */
+    box-shadow: 0 0 8px rgba(255, 85, 85, 1.0), 
+                inset 0 0 5px rgba(255, 120, 120, 0.5);
 }
 
 /* ------------------------------------------- */
-/* 1. รูปโปรไฟล์ (AVATAR) - Yellow Pulse (Delay 0s) */
+/* 5. รูปโปรไฟล์ (AVATAR) - Yellow Pulse (Delay 0s) */
 /* ------------------------------------------- */
 .avatar-area {
     margin-bottom: 20px;
+    margin-top: 10px; /* ชดเชยพื้นที่ Header */
 }
 
 .avatar-img {
     width: 150px; 
     height: 150px;
-    border-radius: 50%; /* ทำให้เป็นวงกลม */
+    border-radius: 50%; 
     object-fit: cover;
     
     /* การสร้าง Gradient Border: ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น */
     background: 
-        url("image_2fb3de.jpg") padding-box, /* รูปโปรไฟล์เป็น background หลัก */
-        linear-gradient(to bottom, #cccccc,  #8fe6e6) border-box; /* Neutral Gradient for border */
+        url("https://placehold.co/150x150/000000/cccccc?text=P+A") padding-box, 
+        linear-gradient(to bottom, #cccccc,  #8fe6e6) border-box; 
     
     border: 5px solid transparent; 
     background-clip: padding-box, border-box; 
@@ -80,7 +175,6 @@ body {
     background-position: center; 
     
     /* 💥💥 Yellow Pulse: Top-Down Sequential (1st item) 💥💥 */
-    /* ใช้ filter-pulse สำหรับ Avatar และ Status Message */
     animation: yellow-pulse-filter 3s infinite alternate; 
     animation-delay: 0s; 
     
@@ -89,7 +183,7 @@ body {
 
 
 /* ------------------------------------------- */
-/* 2. ชื่อ (USERNAME) - Blue Pulse (Delay 0.5s) */
+/* 6. ชื่อ (USERNAME) - Blue Pulse (Delay 0.5s) */
 /* ------------------------------------------- */
 .username {
     font-size: 3.5em; 
@@ -97,7 +191,7 @@ body {
     line-height: 1;
     margin: 0;
     
-    /* Text Gradient (ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น) */
+    /* Text Gradient */
     background: linear-gradient(to bottom, #ffffff, #e0e0e0); 
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -105,7 +199,6 @@ body {
     text-fill-color: transparent;
     
     /* 💥💥 Blue Pulse: Top-Down Sequential (2nd item) 💥💥 */
-    /* ใช้ text-pulse สำหรับ Username */
     animation: blue-pulse-text 3s infinite alternate; 
     animation-delay: 0.5s; 
 
@@ -113,15 +206,15 @@ body {
 }
 
 .username:hover {
-    /* Enhanced Blue Glow on Hover - V2: ลดความเข้ม */
+    /* Enhanced Blue Glow on Hover */
     text-shadow: 
         0 0 8px #ffffff,
-        0 0 15px #66cccc, /* Light Blue Neon Dimmed */
+        0 0 15px #66cccc, 
         0 0 25px rgba(102, 204, 204, 0.5); 
 }
 
 /* ------------------------------------------- */
-/* 3. ข้อความสถานะ (STATUS MESSAGE) - Yellow Pulse (Delay 1.0s) */
+/* 7. ข้อความสถานะ (STATUS MESSAGE) - Yellow Pulse (Delay 1.0s) */
 /* ------------------------------------------- */
 .status-message {
     font-size: 1.3em;
@@ -129,14 +222,13 @@ body {
     color: #ffffff; 
     
     /* 💥💥 Yellow Pulse: Top-Down Sequential (3rd item) 💥💥 */
-    /* ใช้ filter-pulse สำหรับ Avatar และ Status Message */
     animation: yellow-pulse-filter 3s infinite alternate; 
     animation-delay: 1.0s; 
     
     transition: filter 0.5s ease; 
 }
 /* ------------------------------------------- */
-/* 4. ไอคอนโซเชียล (SOCIAL ICONS) - Blue Pulse (Delay 1.5s) */
+/* 8. ไอคอนโซเชียล (SOCIAL ICONS) - Blue Pulse (Delay 1.5s) */
 /* ------------------------------------------- */
 
 .social-links {
@@ -148,6 +240,7 @@ body {
 
 .social-icon {
     display: flex;
+    position: relative; /* สำหรับ tooltip */
     justify-content: center;
     align-items: center;
     width: 50px; 
@@ -158,16 +251,14 @@ body {
     font-size: 24px;
     text-decoration: none; 
     
-    /* Gradient Border (ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น) */
+    /* Gradient Border */
     background: 
-        
-        linear-gradient(to top, #4fbdf0, #ffffff) border-box; /* Neutral Gradient for border (Bottom to Top) */
+        linear-gradient(to top, #4fbdf0, #ffffff) border-box; 
         
     border: 2px solid transparent; 
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); /* V2: Initial white glow (Base state) */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); 
     
     /* 💥💥 Blue Pulse: Top-Down Sequential (4th item / Bottom) 💥💥 */
-    /* ใช้ box-pulse สำหรับ Social Icons */
     animation: blue-pulse-box 3s infinite alternate;
     animation-delay: 1.5s; 
     
@@ -176,7 +267,7 @@ body {
 
 .social-icon:hover {
     transform: scale(1.1); 
-    /* Enhanced Blue Glow on Hover - V2: ลดความเข้ม */
+    /* Enhanced Blue Glow on Hover */
     box-shadow: 0 0 8px #66cccc, 0 0 15px rgba(102, 204, 204, 0.6);
 }
 
@@ -211,7 +302,7 @@ body {
 }
 
 /* =============================== */
-/* 5. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - YELLOW */
+/* 9. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - YELLOW */
 /* =============================== */
 /* ************************************************************* */
 /* 💥💥 YELLOW: ใช้สำหรับ Avatar (1st) และ Status Message (3rd) 💥💥 */
@@ -232,7 +323,7 @@ body {
 }
 
 /* -------------------------------------- */
-/* 6. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - BLUE */
+/* 10. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - BLUE */
 /* -------------------------------------- */
 /* ****************************************************** */
 /* 💥💥 BLUE: ใช้สำหรับ Username (2nd) 💥💥 */
@@ -265,7 +356,31 @@ body {
 }
 
 /* =============================== */
-/* 7. ปุ่มควบคุมเสียง มุมซ้ายบน (FIXED) - โทนขาว-ดำเรืองแสงขาว (ลดความเข้ม) */
+/* 11. KEYFRAMES สำหรับ FRAME GLOW EFFECT (ปรับเป็น Win11 Glassy Pulse) */
+/* =============================== */
+@keyframes frame-pulse {
+    /* 🚨 ปรับ: Base: เน้นเงาภายในที่ละเอียดและอ่อนโยน */
+    0% {
+        box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                    inset 0 0 5px rgba(255, 255, 255, 0.05);
+        opacity: 0.9;
+    }
+    /* 🚨 ปรับ: Peak: เรืองแสงสีฟ้า/ไซอันอ่อนที่นุ่มนวลกว่าเดิม */
+    50% {
+        box-shadow: 0 0 10px rgba(135, 228, 235, 0.6), /* Soft outer glow */
+                    inset 0 0 10px rgba(135, 228, 235, 0.3); /* Contained inner light */
+        opacity: 1;
+    }
+    /* 🚨 ปรับ: กลับสู่ Base */
+    100% {
+        box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                    inset 0 0 5px rgba(255, 255, 255, 0.05);
+        opacity: 0.9;
+    }
+}
+
+/* =============================== */
+/* 12. ปุ่มควบคุมเสียง มุมซ้ายบน (FIXED) - ไม่มีการเปลี่ยนแปลง */
 /* =============================== */
 
 .audio-controls-fixed {
@@ -287,7 +402,7 @@ body {
 
 .audio-controls-fixed button {
     /* สไตล์ปุ่ม Mute - สีขาวโปร่งแสง */
-    background-color: rgba(255, 255, 255, 0.1); /* V2: ลดความเข้ม */
+    background-color: rgba(255, 255, 255, 0.1); 
     border: none; 
     color: #87e4eb;
     padding: 8px 12px; 
@@ -295,17 +410,16 @@ body {
     cursor: pointer;
     font-size: 1.1em;
     transition: background-color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; 
-    /* V2: ลดเอฟเฟกต์เรืองแสงสีขาว */
     box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
-     /* 💥 Filter เรืองแสงสีฟ้าอ่อนนิดๆ (ตามที่ร้องขอ) 💥 */
+    /* 💥 Filter เรืองแสงสีฟ้าอ่อนนิดๆ */
     filter: 
-     drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); /* #87e4eb glow */
+        drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); 
 }
 
 
 .audio-controls-fixed button:hover {
     /* เปลี่ยนเป็นสีขาวเข้มขึ้นเมื่อ Hover */
-    background-color: rgba(255, 255, 255, 0.2); /* V2: ลดความเข้ม */
+    background-color: rgba(255, 255, 255, 0.2); 
     transform: scale(1.05);
 }
 
@@ -315,13 +429,13 @@ body {
     font-weight: bold;
     min-width: 40px; 
     text-align: center;
-    font-size: 1em;
-     filter: 
-     drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); /* #87e4eb glow */
+    font-size: 1.em;
+    filter: 
+        drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); 
 }
 
 /* -------------------------------------- */
-/* สไตล์สำหรับแถบเลื่อน (SLIDER) - โทนขาวดำ */
+/* สไตล์สำหรับแถบเลื่อน (SLIDER) - ไม่มีการเปลี่ยนแปลง */
 /* -------------------------------------- */
 
 #volume-slider {
@@ -335,7 +449,6 @@ body {
     opacity: 0.9;
     transition: opacity 0.5s ease, box-shadow 0.5s ease; 
     border-radius: 3px;
-    /* V2: ลดเรืองแสงสีขาว */
     box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
@@ -350,7 +463,6 @@ body {
     background: #ffffff; 
     cursor: pointer;
     border: 1px solid #cccccc;
-    /* V2: ลดเรืองแสงสีขาว */
     box-shadow: 0 0 3px #ffffff;
     transition: all 0.5s ease; 
 }
@@ -364,12 +476,11 @@ body {
     background: #ffffff;
     cursor: pointer;
     border: 1px solid #cccccc;
-    /* V2: ลดเรืองแสงสีขาว */
     box-shadow: 0 0 3px #ffffff;
     transition: all 0.5s ease;
 }
 /* =============================== */
-/* 8. หน้าปก CLICK TO ENTER */
+/* 13. หน้าปก CLICK TO ENTER - ไม่มีการเปลี่ยนแปลง */
 /* =============================== */
 
 
@@ -405,13 +516,13 @@ body {
     margin-bottom: 20px;
     /* V2: ข้อความสีขาวเรืองแสงขาว (ลดความเข้มเงา) */
     color: #a0e1f5; 
-    text-shadow: 0 0 3px#e5ff00; /* V2: ลดขนาดเงาจาก 5px เป็น 3px */
+    text-shadow: 0 0 3px#e5ff00; 
     animation: pulse-text 2s infinite alternate; 
 }
 
 #enter-button {
     background: transparent;
-    /* V2: ขอบและเงาสีขาวนีออน (ลดความเข้ม) */
+    /* V2: ขอบและเงา (ลดความเข้ม) */
     border: 2px solid #e2f18b;
     color: #a0e1f5;
     padding: 15px 30px;
@@ -435,7 +546,7 @@ body {
 }
 
 /* -------------------------------------- */
-/* KEYFRAMES ทั่วไป */
+/* 14. KEYFRAMES ทั่วไป - ไม่มีการเปลี่ยนแปลง */
 /* -------------------------------------- */
 
 @keyframes pulse-text {
@@ -455,4 +566,18 @@ body {
 
 #enter-button {
     font-weight: bold; 
+}
+
+/* ------------------------------------------- */
+/* สไตล์สำหรับเนื้อหาอื่นๆ (เพื่อให้ดูเหมือนหน้าต่างจริงๆ) */
+/* ------------------------------------------- */
+.content-placeholder {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    color: #ffffff80;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
 }
