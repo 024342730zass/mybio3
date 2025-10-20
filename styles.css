@@ -1,0 +1,458 @@
+/* =============================== */
+/* 1. จัดหน้าและ BODY */
+/* =============================== */
+body {
+    /* ทำให้ body เต็มหน้าจอและจัดเนื้อหาอยู่ตรงกลาง */
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    overflow: hidden; 
+    font-family: sans-serif; 
+    background-color: black; /* สำรอง */
+}
+
+/* =============================== */
+/* 2. สไตล์สำหรับพื้นหลังวิดีโอ (.background-image) */
+/* =============================== */
+.background-image {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    min-width: 100%; 
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 1; 
+    
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    
+    /* V2: ลดความสว่างลงเหลือ 40% และปรับคอนทราสต์เล็กน้อยเพื่อลดอาการปวดตา */
+    filter: 
+        /* ทำให้เป็นขาวดำ */
+        brightness(65%) 
+        contrast(90%);  
+}
+
+/* =============================== */
+/* 3. การ์ดโปรไฟล์ และ เงาเรืองแสง */
+/* =============================== */
+.profile-card {
+    position: relative;
+    z-index: 2; 
+    text-align: center; 
+    color: #ffffff99; /* V2: สีข้อความหลักสีขาวลดความทึบแสงเล็กน้อย */
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    /* V2: เงาเรืองแสงสีขาวเริ่มต้น (ลดความเข้มลงมาก) */
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.3))
+        drop-shadow(0 0 6px rgba(200, 200, 200, 0.15));
+    transition: filter 0.5s ease; 
+}
+
+/* ------------------------------------------- */
+/* 1. รูปโปรไฟล์ (AVATAR) - Yellow Pulse (Delay 0s) */
+/* ------------------------------------------- */
+.avatar-area {
+    margin-bottom: 20px;
+}
+
+.avatar-img {
+    width: 150px; 
+    height: 150px;
+    border-radius: 50%; /* ทำให้เป็นวงกลม */
+    object-fit: cover;
+    
+    /* การสร้าง Gradient Border: ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น */
+    background: 
+        url("image_2fb3de.jpg") padding-box, /* รูปโปรไฟล์เป็น background หลัก */
+        linear-gradient(to bottom, #cccccc,  #8fe6e6) border-box; /* Neutral Gradient for border */
+    
+    border: 5px solid transparent; 
+    background-clip: padding-box, border-box; 
+    background-origin: border-box; 
+    background-size: cover; 
+    background-position: center; 
+    
+    /* 💥💥 Yellow Pulse: Top-Down Sequential (1st item) 💥💥 */
+    /* ใช้ filter-pulse สำหรับ Avatar และ Status Message */
+    animation: yellow-pulse-filter 3s infinite alternate; 
+    animation-delay: 0s; 
+    
+    transition: all 0.5s ease;
+}
+
+
+/* ------------------------------------------- */
+/* 2. ชื่อ (USERNAME) - Blue Pulse (Delay 0.5s) */
+/* ------------------------------------------- */
+.username {
+    font-size: 3.5em; 
+    font-weight: 900;
+    line-height: 1;
+    margin: 0;
+    
+    /* Text Gradient (ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น) */
+    background: linear-gradient(to bottom, #ffffff, #e0e0e0); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    
+    /* 💥💥 Blue Pulse: Top-Down Sequential (2nd item) 💥💥 */
+    /* ใช้ text-pulse สำหรับ Username */
+    animation: blue-pulse-text 3s infinite alternate; 
+    animation-delay: 0.5s; 
+
+    transition: all 0.5s ease; 
+}
+
+.username:hover {
+    /* Enhanced Blue Glow on Hover - V2: ลดความเข้ม */
+    text-shadow: 
+        0 0 8px #ffffff,
+        0 0 15px #66cccc, /* Light Blue Neon Dimmed */
+        0 0 25px rgba(102, 204, 204, 0.5); 
+}
+
+/* ------------------------------------------- */
+/* 3. ข้อความสถานะ (STATUS MESSAGE) - Yellow Pulse (Delay 1.0s) */
+/* ------------------------------------------- */
+.status-message {
+    font-size: 1.3em;
+    margin-top: 5px;
+    color: #ffffff; 
+    
+    /* 💥💥 Yellow Pulse: Top-Down Sequential (3rd item) 💥💥 */
+    /* ใช้ filter-pulse สำหรับ Avatar และ Status Message */
+    animation: yellow-pulse-filter 3s infinite alternate; 
+    animation-delay: 1.0s; 
+    
+    transition: filter 0.5s ease; 
+}
+/* ------------------------------------------- */
+/* 4. ไอคอนโซเชียล (SOCIAL ICONS) - Blue Pulse (Delay 1.5s) */
+/* ------------------------------------------- */
+
+.social-links {
+    margin-top: 30px; 
+    display: flex;
+    gap: 15px; 
+    z-index: 2; 
+}
+
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    
+    color: white; 
+    font-size: 24px;
+    text-decoration: none; 
+    
+    /* Gradient Border (ใช้สีกลางๆ เพื่อให้ Keyframe Glow เด่น) */
+    background: 
+        
+        linear-gradient(to top, #4fbdf0, #ffffff) border-box; /* Neutral Gradient for border (Bottom to Top) */
+        
+    border: 2px solid transparent; 
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); /* V2: Initial white glow (Base state) */
+    
+    /* 💥💥 Blue Pulse: Top-Down Sequential (4th item / Bottom) 💥💥 */
+    /* ใช้ box-pulse สำหรับ Social Icons */
+    animation: blue-pulse-box 3s infinite alternate;
+    animation-delay: 1.5s; 
+    
+    transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1); 
+    /* Enhanced Blue Glow on Hover - V2: ลดความเข้ม */
+    box-shadow: 0 0 8px #66cccc, 0 0 15px rgba(102, 204, 204, 0.6);
+}
+
+/* ในไฟล์ styles.css */
+.copy-tooltip {
+    position: absolute;
+    top: -35px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    
+    /* พื้นหลังสีดำโปร่งใสเพื่อให้ข้อความสีขาวเด่น */
+    background-color: rgba(0, 0, 0, 0.85); 
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    white-space: nowrap; 
+    
+    opacity: 0;
+    animation: fadein 0.2s forwards, fadeout 0.3s forwards 1.2s;
+}
+
+@keyframes fadein {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* =============================== */
+/* 5. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - YELLOW */
+/* =============================== */
+/* ************************************************************* */
+/* 💥💥 YELLOW: ใช้สำหรับ Avatar (1st) และ Status Message (3rd) 💥💥 */
+/* ************************************************************* */
+@keyframes yellow-pulse-filter {
+    /* ฐานสีขาว/เทาอ่อน (ป้องกันการเลือนหาย/ขยับ) - V2: ลดความเข้ม */
+    0%, 100% { 
+        filter: 
+            drop-shadow(0 0 3px rgba(255, 255, 255, 0.3)) 
+            drop-shadow(0 0 6px rgba(230, 230, 230, 0.15)); 
+    }
+    /* จุดเรืองแสงสีเหลืองสูงสุด - V2: ลดความเข้มและขนาดเงา */
+    50% { 
+        filter: 
+            drop-shadow(0 0 8px #ffffff) 
+            drop-shadow(0 0 15px #ffcc66); /* Peak Yellow Glow Dimmed */
+    }
+}
+
+/* -------------------------------------- */
+/* 6. KEYFRAMES สำหรับ SEQUENTIAL GLOW EFFECT - BLUE */
+/* -------------------------------------- */
+/* ****************************************************** */
+/* 💥💥 BLUE: ใช้สำหรับ Username (2nd) 💥💥 */
+/* ****************************************************** */
+@keyframes blue-pulse-text {
+    /* ฐานสีขาว/เทาอ่อน (ป้องกันการเลือนหาย/ขยับ) - V2: ลดความเข้ม */
+    0%, 100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); } 
+    /* จุดเรืองแสงสีฟ้าสูงสุด - V2: ลดความเข้มและขนาดเงา */
+    50% { 
+        text-shadow: 
+            0 0 10px #ffffff,
+            0 0 20px #66cccc; /* Peak Blue Glow (Cyan Bright) Dimmed */
+    }
+}
+/* ****************************************************** */
+/* 💥💥 BLUE: ใช้สำหรับ Social Icons (4th) 💥💥 */
+/* ****************************************************** */
+@keyframes blue-pulse-box {
+    /* ฐานสีขาว/เทาอ่อน (ป้องกันการเลือนหาย/ขยับ) - V2: ลดความเข้ม */
+    0%, 100% { 
+        box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); 
+    }
+    /* จุดเรืองแสงสีฟ้าสูงสุด - V2: ลดความเข้มและขนาดเงา */
+    50% { 
+        box-shadow: 
+            0 0 8px #ffffff, 
+            0 0 15px #66cccc, 
+            0 0 20px rgba(102, 204, 204, 0.6); /* Strong Blue glow (Cyan Bright) Dimmed */
+    }
+}
+
+/* =============================== */
+/* 7. ปุ่มควบคุมเสียง มุมซ้ายบน (FIXED) - โทนขาว-ดำเรืองแสงขาว (ลดความเข้ม) */
+/* =============================== */
+
+.audio-controls-fixed {
+    position: fixed;
+    top: 20px; 
+    left: 20px; 
+    z-index: 10; 
+    
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+
+    /* พื้นหลังสีดำโปร่งแสง */
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 10px 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.audio-controls-fixed button {
+    /* สไตล์ปุ่ม Mute - สีขาวโปร่งแสง */
+    background-color: rgba(255, 255, 255, 0.1); /* V2: ลดความเข้ม */
+    border: none; 
+    color: #87e4eb;
+    padding: 8px 12px; 
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease; 
+    /* V2: ลดเอฟเฟกต์เรืองแสงสีขาว */
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+     /* 💥 Filter เรืองแสงสีฟ้าอ่อนนิดๆ (ตามที่ร้องขอ) 💥 */
+    filter: 
+     drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); /* #87e4eb glow */
+}
+
+
+.audio-controls-fixed button:hover {
+    /* เปลี่ยนเป็นสีขาวเข้มขึ้นเมื่อ Hover */
+    background-color: rgba(255, 255, 255, 0.2); /* V2: ลดความเข้ม */
+    transform: scale(1.05);
+}
+
+#volume-display {
+    /* สไตล์สำหรับแสดงค่าระดับเสียง - สีขาวสว่าง */
+    color: #86e7e7; 
+    font-weight: bold;
+    min-width: 40px; 
+    text-align: center;
+    font-size: 1em;
+     filter: 
+     drop-shadow(0 0 8px rgba(135, 228, 235, 1.0)); /* #87e4eb glow */
+}
+
+/* -------------------------------------- */
+/* สไตล์สำหรับแถบเลื่อน (SLIDER) - โทนขาวดำ */
+/* -------------------------------------- */
+
+#volume-slider {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 120px; 
+    height: 6px;
+    /* รางสีขาวโปร่งแสง */
+    background: rgba(255, 255, 255, 0.2); 
+    outline: none;
+    opacity: 0.9;
+    transition: opacity 0.5s ease, box-shadow 0.5s ease; 
+    border-radius: 3px;
+    /* V2: ลดเรืองแสงสีขาว */
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* สไตล์สำหรับปุ่มเลื่อน (Thumb) */
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px; 
+    height: 18px;
+    border-radius: 50%; 
+    /* ปุ่มสีขาวสว่าง */
+    background: #ffffff; 
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    /* V2: ลดเรืองแสงสีขาว */
+    box-shadow: 0 0 3px #ffffff;
+    transition: all 0.5s ease; 
+}
+
+/* สไตล์สำหรับปุ่มเลื่อน (Thumb) - Firefox */
+#volume-slider::-moz-range-thumb {
+    width: 18px; 
+    height: 18px;
+    border-radius: 50%;
+    /* ปุ่มสีขาวสว่าง */
+    background: #ffffff;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    /* V2: ลดเรืองแสงสีขาว */
+    box-shadow: 0 0 3px #ffffff;
+    transition: all 0.5s ease;
+}
+/* =============================== */
+/* 8. หน้าปก CLICK TO ENTER */
+/* =============================== */
+
+
+#entry-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    background-color: rgba(22, 6, 29, 0.90); 
+    
+    z-index: 100; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+    font-family: sans-serif;
+}
+.entry-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.greeting {
+    font-size: 1.5em;
+    font-weight: 300;
+    margin-bottom: 20px;
+    /* V2: ข้อความสีขาวเรืองแสงขาว (ลดความเข้มเงา) */
+    color: #a0e1f5; 
+    text-shadow: 0 0 3px#e5ff00; /* V2: ลดขนาดเงาจาก 5px เป็น 3px */
+    animation: pulse-text 2s infinite alternate; 
+}
+
+#enter-button {
+    background: transparent;
+    /* V2: ขอบและเงาสีขาวนีออน (ลดความเข้ม) */
+    border: 2px solid #e2f18b;
+    color: #a0e1f5;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 8px;
+    /* เปลี่ยน Transition เป็น 0.5s */
+    transition: all 0.5s ease;
+    
+    /* V2: ลดขนาดเงาจาก 5, 10px เป็น 3, 8px */
+    box-shadow: 0 0 3px #a0e1f5ff, 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+#enter-button:hover {
+    /* พื้นหลังสีขาวโปร่งแสงเมื่อ Hover */
+    background-color: rgba(255, 255, 255, 0.1);
+    /* V2: เงาเข้มขึ้นสีขาว (ลดขนาด) */
+    box-shadow: 0 0 8px #ffffff, 0 0 15px rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+/* -------------------------------------- */
+/* KEYFRAMES ทั่วไป */
+/* -------------------------------------- */
+
+@keyframes pulse-text {
+    from {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}   
+.greeting, 
+#enter-button {
+    font-family: sans-serif;
+}
+
+#enter-button {
+    font-weight: bold; 
+}

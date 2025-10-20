@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anju - Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css"> 
+</head>
+<body>
+    
+<div id="entry-overlay">
+    <div class="entry-content">
+        <p class="greeting">Welcome to Anju's Profile</p>
+        <button id="enter-button">
+            CLICK TO ENTER
+        </button>
+    </div>
+</div>
+
+<video muted loop id="video-background" class="background-image">
+    <source src="pic/bg3.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+
+<div class="audio-controls-fixed">
+    <button id="mute-toggle"><i class="fas fa-volume-off"></i></button>
+    <input type="range" id="volume-slider" min="0" max="100" value="10">
+    <span id="volume-display">10%</span>
+</div>
+
+<div class="profile-card">
+    
+    <div class="avatar-area">
+        <img src="pic/avatar.jpg" alt="Avatar" class="avatar-img">
+    </div>
+    
+    <h1 class="username">Anju</h1>
+    
+    <p class="status-message">wanna be my friend?</p>
+    
+    <div class="social-links">
+        <a href="#" onclick="copyAndNotify('anju0233', 'discord-btn'); return false;" class="social-icon" id="discord-btn">
+            <i class="fab fa-discord"></i>
+        </a>
+        <a href="https://steamcommunity.com/id/024342730/" target="_blank" class="social-icon">
+            <i class="fab fa-steam"></i>
+        </a>
+        <a href="https://www.roblox.com/th/users/493157024/profile" target="_blank" class="social-icon">
+            <img src="pic/roblox.png" alt="Roblox" style="width: 24px; height: 24px;">
+        </a>
+        <a href="https://www.youtube.com/@kanju0243" target="_blank" class="social-icon">
+            <i class="fab fa-youtube"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    // --- ฟังก์ชันคัดลอก (Copy and Notify) ---
+    function copyAndNotify(text, buttonId) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        
+        // ทำให้ textarea มองไม่เห็น
+        textarea.style.position = 'fixed';
+        textarea.style.top = 0;
+        textarea.style.left = 0;
+
+        document.body.appendChild(textarea);
+        
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                // คัดลอกสำเร็จด้วย Clipboard API
+            }).catch(err => {
+                // คัดลอกล้มเหลว ใช้ fallback method
+                textarea.select();
+                document.execCommand('copy');
+            });
+        } else {
+            // Browser เก่า: ใช้ fallback method
+            textarea.select();
+            document.execCommand('copy');
+        }
+
+        document.body.removeChild(textarea);
+        
+        const button = document.getElementById(buttonId);
+        // ลบ Tooltip เก่า (ถ้ามี)
+        const existingTooltip = button.querySelector('.copy-tooltip');
+        if (existingTooltip) {
+            existingTooltip.remove();
+        }
+
+        // สร้าง Tooltip ใหม่
+        const tooltip = document.createElement('div');
+        tooltip.className = 'copy-tooltip';
+        tooltip.textContent = 'Copied! ' + text; // แสดงข้อความที่คัดลอก
+        
+        button.appendChild(tooltip);
+
+        // ซ่อน Tooltip หลังจาก 1.5 วินาที
+        setTimeout(() => {
+            if(tooltip.parentNode === button) {
+                 tooltip.remove();
+            }
+        }, 1500);
+    }
+
+    // --- ฟังก์ชันควบคุมเสียงและ Click to Enter ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const video = document.getElementById('video-background');
+        const muteToggleBtn = document.getElementById('mute-toggle');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeDisplay = document.getElementById('volume-display');
+        
+        // องค์ประกอบสำหรับ Click to Enter
+        const entryOverlay = document.getElementById('entry-overlay');
+        const enterButton = document.getElementById('enter-button');
+        
+        // ตั้งค่าระดับเสียงเริ่มต้น (0.1 = 10%)
+        let currentVolume = 0.1; 
+        let lastVolume = currentVolume;
+        
+        // ตั้งค่าเริ่มต้นของวิดีโอและแถบเลื่อน
+        // วิดีโอไม่จำเป็นต้องเล่น แต่ต้องมีการตั้งค่า Volume/Mute เตรียมไว้
+        video.volume = currentVolume;
+        video.muted = true; // เริ่มต้นที่ mute
+        volumeSlider.value = currentVolume * 100;
+
+        // --- ฟังก์ชันอัพเดท UI ---
+        function updateVolumeDisplay() {
+            volumeDisplay.textContent = Math.round(video.volume * 100) + '%';
+            
+            if (video.muted || video.volume === 0) {
+                muteToggleBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+            } else {
+                muteToggleBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+        }
+
+        // ----------------------------------------------------
+        // 🔑 LOGIC สำหรับ CLICK TO ENTER (สั่งวิดีโอเล่นและเปิดเสียง)
+        // ----------------------------------------------------
+        if (enterButton) {
+             enterButton.addEventListener('click', () => {
+                // 1. สั่งให้วิดีโอเริ่มเล่น
+                video.play().catch(error => {
+                     console.error("Video Playback failed (browser policy):", error);
+                });
+
+                // 2. เปิดเสียงวิดีโอ 
+                video.muted = false;
+                // 3. กำหนดให้ระดับเสียงเป็นค่าเริ่มต้นที่เราตั้งไว้
+                video.volume = currentVolume; 
+                
+                // 4. ซ่อนหน้าปก (ใช้ opacity เพื่อให้เกิด fade effect จาก CSS)
+                if (entryOverlay) {
+                    entryOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        entryOverlay.style.display = 'none';
+                    }, 500); // 0.5 วินาทีเท่ากับ transition ใน CSS
+                }
+
+                // 5. อัพเดท UI ของปุ่มเสียง
+                updateVolumeDisplay();
+            });
+        }
+        
+        // ----------------------------------------------------
+
+
+        // --- 1. การควบคุมแถบเลื่อน (Slider) ---
+        if (volumeSlider) {
+            volumeSlider.addEventListener('input', (event) => {
+                currentVolume = event.target.value / 100;
+                
+                if (currentVolume > 0) {
+                    video.volume = currentVolume;
+                    video.muted = false; 
+                    lastVolume = currentVolume;
+                } else {
+                    video.volume = 0;
+                    video.muted = true; 
+                }
+                updateVolumeDisplay();
+            });
+        }
+
+        // --- 2. การควบคุม Mute/Unmute ---
+        if (muteToggleBtn) {
+            muteToggleBtn.addEventListener('click', () => {
+                if (video.muted) {
+                    // Unmute
+                    if (lastVolume === 0) {
+                        lastVolume = 0.1; // ป้องกันการ Unmute แล้วเสียงเป็น 0
+                    }
+                    video.volume = lastVolume;
+                    video.muted = false;
+                    volumeSlider.value = lastVolume * 100; 
+                } else {
+                    // Mute
+                    lastVolume = video.volume; 
+                    video.volume = 0;
+                    video.muted = true;
+                    volumeSlider.value = 0; 
+                }
+                updateVolumeDisplay();
+            });
+        }
+        
+        // อัพเดท UI ครั้งแรกเมื่อหน้าโหลดเสร็จ
+        updateVolumeDisplay();
+    });
+</script>
+</body>
+</html>
