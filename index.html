@@ -3,57 +3,503 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anju - Profile</title>
+    <title>Anju - Profile Card (Windows 11 Style)</title>
+    <!-- โหลด Font Inter และ Font Awesome (สำหรับ Icon) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css"> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        /* ======================================================== */
+        /* 1. จัดหน้าและ BODY / พื้นหลังวิดีโอ */
+        /* ======================================================== */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            overflow: hidden; 
+            font-family: 'Inter', sans-serif; 
+            background-color: #111827;
+        }
+
+        .background-image {
+            position: fixed; 
+            top: 0;
+            left: 0;
+            min-width: 100%; 
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1; 
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+            filter: brightness(65%) contrast(90%);  
+        }
+
+        /* ======================================================== */
+        /* 2. OVERLAY และ CLICK TO ENTER */
+        /* ======================================================== */
+        #entry-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(17, 24, 39, 0.95); /* สีเดียวกับ body แต่ทึบกว่า */
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease; /* Fade effect */
+        }
+
+        .entry-content {
+            text-align: center;
+        }
+
+        .greeting {
+            font-size: 2em;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: 700;
+            animation: blue-pulse-text 3s infinite alternate; 
+        }
+
+        #enter-button {
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        #enter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 198, 255, 0.6);
+        }
+        
+        /* ======================================================== */
+        /* 3. PROFILE CARD (WINDOWS 11 GLASSY STYLE) */
+        /* ======================================================== */
+        .profile-card {
+            position: relative;
+            z-index: 2; 
+            text-align: center; 
+            color: #ffffff99; 
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            
+            /* Padding ด้านบนต้องเว้นที่ให้ Window Controls */
+            padding: 50px 40px 40px; 
+            border-radius: 15px; 
+            
+            /* ธีม Windows 11 โปร่งแสงสีฟ้าอ่อน */
+            background-color: rgba(135, 228, 235, 0.05); /* สีฟ้าอ่อนโปร่งแสง */
+            backdrop-filter: blur(10px); /* เพิ่มความเบลอ */
+            border: 1px solid rgba(135, 228, 235, 0.2); 
+            
+            box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+            max-width: 400px; 
+            width: 90%;
+            transition: all 0.5s ease; 
+        }
+
+        /* กรอบเรืองแสงรอบการ์ดโปรไฟล์ */
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 15px; 
+            border: 2px solid rgba(255, 255, 255, 0.2); 
+            z-index: -1; 
+            
+            box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                        inset 0 0 5px rgba(255, 255, 255, 0.05);
+            
+            animation: frame-pulse 4s infinite ease-in-out alternate;
+        }
+
+
+        /* ======================================================== */
+        /* 4. WINDOW CONTROLS (ปุ่มควบคุมหน้าต่าง - ส่วนที่เพิ่มตามต้องการ) */
+        /* ======================================================== */
+        .window-controls {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 0; 
+            height: 35px; 
+            align-items: center;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.1); 
+            border-top-right-radius: 15px; 
+            overflow: hidden; 
+        }
+
+        .control-button {
+            width: 45px; 
+            height: 35px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px; 
+            font-weight: 900;
+            color: #ffffffc0; 
+            transition: background-color 0.2s, color 0.2s, box-shadow 0.2s; 
+            cursor: pointer; 
+            user-select: none; 
+        }
+
+        /* ปุ่มย่อ/ขยาย (ไม่ใช่ปุ่มปิด) - ธีมสีฟ้าอ่อน + เรืองแสง */
+        .control-button:not(.close):hover {
+            background-color: rgba(135, 228, 235, 0.25); 
+            color: #ffffff;
+            box-shadow: 0 0 5px rgba(135, 228, 235, 0.9), 
+                        inset 0 0 5px rgba(135, 228, 235, 0.5);
+        }
+
+        /* ปุ่มปิด - สีแดง + เรืองแสง */
+        .close {
+            border-top-right-radius: 15px;
+        }
+
+        .close:hover {
+            background-color: #ff5555; 
+            color: white;
+            box-shadow: 0 0 8px rgba(255, 85, 85, 1.0), 
+                        inset 0 0 5px rgba(255, 120, 120, 0.5);
+        }
+        
+        /* ======================================================== */
+        /* 5. AVATAR, USERNAME, STATUS (พร้อม Sequential Glow) */
+        /* ======================================================== */
+        .avatar-area {
+            margin-bottom: 20px;
+            margin-top: 10px;
+        }
+
+        .avatar-img {
+            width: 150px; 
+            height: 150px;
+            border-radius: 50%; 
+            object-fit: cover;
+            
+            /* Gradient Border */
+            background: 
+                url("pic/avatar.jpg") padding-box, 
+                linear-gradient(to bottom, #cccccc,  #8fe6e6) border-box; 
+            
+            border: 5px solid transparent; 
+            background-clip: padding-box, border-box; 
+            background-origin: border-box; 
+            background-size: cover; 
+            background-position: center; 
+            
+            /* Yellow Pulse: Delay 0s */
+            animation: yellow-pulse-filter 3s infinite alternate; 
+            animation-delay: 0s; 
+            transition: all 0.5s ease;
+        }
+
+        .username {
+            font-size: 3.5em; 
+            font-weight: 900;
+            line-height: 1;
+            margin: 0;
+            
+            /* Text Gradient */
+            background: linear-gradient(to bottom, #ffffff, #e0e0e0); 
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            
+            /* Blue Pulse: Delay 0.5s */
+            animation: blue-pulse-text 3s infinite alternate; 
+            animation-delay: 0.5s; 
+            transition: all 0.5s ease; 
+        }
+
+        .username:hover {
+            text-shadow: 
+                0 0 8px #ffffff,
+                0 0 15px #66cccc, 
+                0 0 25px rgba(102, 204, 204, 0.5); 
+        }
+
+        .status-message {
+            font-size: 1.3em;
+            margin-top: 5px;
+            color: #ffffff; 
+            
+            /* Yellow Pulse: Delay 1.0s */
+            animation: yellow-pulse-filter 3s infinite alternate; 
+            animation-delay: 1.0s; 
+            transition: filter 0.5s ease; 
+        }
+
+        /* ======================================================== */
+        /* 6. SOCIAL ICONS และ TOOLTIP */
+        /* ======================================================== */
+
+        .social-links {
+            margin-top: 30px; 
+            display: flex;
+            gap: 15px; 
+            z-index: 2; 
+        }
+
+        .social-icon {
+            display: flex;
+            position: relative; 
+            justify-content: center;
+            align-items: center;
+            width: 50px; 
+            height: 50px;
+            border-radius: 50%;
+            
+            color: white; 
+            font-size: 24px;
+            text-decoration: none; 
+            
+            /* Gradient Border */
+            background: 
+                linear-gradient(to top, #4fbdf0, #ffffff) border-box; 
+                
+            border: 2px solid transparent; 
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); 
+            
+            /* Blue Pulse: Delay 1.5s */
+            animation: blue-pulse-box 3s infinite alternate;
+            animation-delay: 1.5s; 
+            
+            transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1); 
+            box-shadow: 0 0 8px #66cccc, 0 0 15px rgba(102, 204, 204, 0.6);
+        }
+
+        /* Tooltip สำหรับการคัดลอก */
+        .copy-tooltip {
+            position: absolute;
+            top: -35px; 
+            left: 50%;
+            transform: translateX(-50%); 
+            
+            background-color: rgba(0, 0, 0, 0.85); 
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            white-space: nowrap; 
+            
+            opacity: 0;
+            animation: fadein 0.2s forwards, fadeout 0.3s forwards 1.2s;
+        }
+
+        /* ======================================================== */
+        /* 7. AUDIO CONTROLS (Fixed) */
+        /* ======================================================== */
+        .audio-controls-fixed {
+            position: fixed;
+            top: 20px; 
+            left: 20px; 
+            z-index: 10; 
+            display: flex;
+            align-items: center;
+            gap: 15px; 
+
+            /* Glassy effect */
+            background-color: rgba(0, 0, 0, 0.3); 
+            backdrop-filter: blur(5px);
+            padding: 10px 15px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #mute-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        #mute-toggle:hover {
+            color: #66cccc;
+        }
+
+        #volume-slider {
+            width: 80px;
+        }
+        
+        #volume-display {
+            color: white;
+            font-size: 0.9em;
+            width: 40px;
+        }
+        
+        /* ======================================================== */
+        /* 8. KEYFRAMES */
+        /* ======================================================== */
+        @keyframes yellow-pulse-filter {
+            0%, 100% { 
+                filter: 
+                    drop-shadow(0 0 3px rgba(255, 255, 255, 0.3)) 
+                    drop-shadow(0 0 6px rgba(230, 230, 230, 0.15)); 
+            }
+            50% { 
+                filter: 
+                    drop-shadow(0 0 8px #ffffff) 
+                    drop-shadow(0 0 15px #ffcc66); 
+            }
+        }
+
+        @keyframes blue-pulse-text {
+            0%, 100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); } 
+            50% { 
+                text-shadow: 
+                    0 0 10px #ffffff,
+                    0 0 20px #66cccc; 
+            }
+        }
+        @keyframes blue-pulse-box {
+            0%, 100% { 
+                box-shadow: 0 0 4px rgba(255, 255, 255, 0.4); 
+            }
+            50% { 
+                box-shadow: 
+                    0 0 8px #ffffff, 
+                    0 0 15px #66cccc, 
+                    0 0 20px rgba(102, 204, 204, 0.6); 
+            }
+        }
+
+        @keyframes frame-pulse {
+            0% {
+                box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                            inset 0 0 5px rgba(255, 255, 255, 0.05);
+                opacity: 0.9;
+            }
+            50% {
+                box-shadow: 0 0 10px rgba(135, 228, 235, 0.6), 
+                            inset 0 0 10px rgba(135, 228, 235, 0.3); 
+                opacity: 1;
+            }
+            100% {
+                box-shadow: 0 0 2px rgba(135, 228, 235, 0.2), 
+                            inset 0 0 5px rgba(255, 255, 255, 0.05);
+                opacity: 0.9;
+            }
+        }
+        
+        @keyframes fadein {
+            from { opacity: 0; transform: translate(-50%, 10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        @keyframes fadeout {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+    </style>
 </head>
 <body>
-    
-<div id="entry-overlay">
-    <div class="entry-content">
-        <p class="greeting">Welcome to Anju's Profile</p>
-        <button id="enter-button">
-            CLICK TO ENTER
-        </button>
+    <!-- Overlay for Click to Enter -->
+    <div id="entry-overlay">
+        <div class="entry-content">
+            <p class="greeting">Welcome to Anju's Profile</p>
+            <button id="enter-button">
+                CLICK TO ENTER
+            </button>
+        </div>
     </div>
-</div>
 
-<video muted loop id="video-background" class="background-image">
-    <source src="pic/bg3.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
+    <!-- Video Background (NOTE: requires a file at src="pic/bg3.mp4" to work) -->
+    <video muted loop id="video-background" class="background-image">
+        <source src="pic/bg3.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
-<div class="audio-controls-fixed">
-    <button id="mute-toggle"><i class="fas fa-volume-off"></i></button>
-    <input type="range" id="volume-slider" min="0" max="100" value="10">
-    <span id="volume-display">10%</span>
-</div>
-
-<div class="profile-card">
-    
-    <div class="avatar-area">
-        <img src="pic/avatar.jpg" alt="Avatar" class="avatar-img">
+    <!-- Fixed Audio Controls -->
+    <div class="audio-controls-fixed">
+        <button id="mute-toggle"><i class="fas fa-volume-off"></i></button>
+        <input type="range" id="volume-slider" min="0" max="100" value="10">
+        <span id="volume-display">10%</span>
     </div>
-    
-    <h1 class="username">Anju</h1>
-    
-    <p class="status-message">wanna be my friend?</p>
-    
-    <div class="social-links">
-        <a href="#" onclick="copyAndNotify('anju0233', 'discord-btn'); return false;" class="social-icon" id="discord-btn">
-            <i class="fab fa-discord"></i>
-        </a>
-        <a href="https://steamcommunity.com/id/024342730/" target="_blank" class="social-icon">
-            <i class="fab fa-steam"></i>
-        </a>
-        <a href="https://www.roblox.com/th/users/493157024/profile" target="_blank" class="social-icon">
-            <img src="pic/roblox.png" alt="Roblox" style="width: 24px; height: 24px;">
-        </a>
-        <a href="https://www.youtube.com/@kanju0243" target="_blank" class="social-icon">
-            <i class="fab fa-youtube"></i>
-        </a>
+
+    <!-- Profile Card (The Window Frame) -->
+    <div class="profile-card">
+        
+        <!-- 🔥🔥🔥 แถบควบคุมหน้าต่าง (Window Controls) - ถูกเพิ่มไว้ที่นี่ 🔥🔥🔥 -->
+        <div class="window-controls">
+            <!-- ปุ่มย่อ (Minimize) -->
+            <div class="control-button minimize" title="ย่อหน้าต่าง">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M5.5 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1H6a.5.5 0 0 1-.5-.5"/>
+                </svg>
+            </div>
+
+            <!-- ปุ่มขยาย (Maximize/Restore) -->
+            <div class="control-button maximize" title="ขยายหน้าต่าง">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M3.5 10a.5.5 0 0 1-.5-.5V3H10.5a.5.5 0 0 1 0 1H4v5.5a.5.5 0 0 1-.5.5"/>
+                </svg>
+            </div>
+
+            <!-- ปุ่มปิด (Close) - สีแดง -->
+            <div class="control-button close" title="ปิดหน้าต่าง">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                </svg>
+            </div>
+        </div>
+        <!-- 🔥🔥🔥 สิ้นสุดแถบควบคุมหน้าต่าง 🔥🔥🔥 -->
+        
+        <div class="avatar-area">
+            <!-- NOTE: requires a file at src="pic/avatar.jpg" to work -->
+            <img src="pic/avatar.jpg" alt="Avatar" class="avatar-img">
+        </div>
+        
+        <h1 class="username">Anju</h1>
+        
+        <p class="status-message">wanna be my friend?</p>
+        
+        <div class="social-links">
+            <a href="#" onclick="copyAndNotify('anju0233', 'discord-btn'); return false;" class="social-icon" id="discord-btn">
+                <i class="fab fa-discord"></i>
+            </a>
+            <a href="https://steamcommunity.com/id/024342730/" target="_blank" class="social-icon">
+                <i class="fab fa-steam"></i>
+            </a>
+            <a href="https://www.roblox.com/th/users/493157024/profile" target="_blank" class="social-icon">
+                <!-- NOTE: requires a file at src="pic/roblox.png" to work -->
+                <img src="pic/roblox.png" alt="Roblox" style="width: 24px; height: 24px;">
+            </a>
+            <a href="https://www.youtube.com/@kanju0243" target="_blank" class="social-icon">
+                <i class="fab fa-youtube"></i>
+            </a>
+        </div>
     </div>
-</div>
 
 <script>
     // --- ฟังก์ชันคัดลอก (Copy and Notify) ---
@@ -68,6 +514,7 @@
 
         document.body.appendChild(textarea);
         
+        // ใช้ Clipboard API หรือ Fallback
         if (navigator.clipboard) {
             navigator.clipboard.writeText(text).then(() => {
                 // คัดลอกสำเร็จด้วย Clipboard API
@@ -122,14 +569,13 @@
         let lastVolume = currentVolume;
         
         // ตั้งค่าเริ่มต้นของวิดีโอและแถบเลื่อน
-        // วิดีโอไม่จำเป็นต้องเล่น แต่ต้องมีการตั้งค่า Volume/Mute เตรียมไว้
         video.volume = currentVolume;
         video.muted = true; // เริ่มต้นที่ mute
         volumeSlider.value = currentVolume * 100;
 
         // --- ฟังก์ชันอัพเดท UI ---
         function updateVolumeDisplay() {
-            volumeDisplay.textContent = Math.round(video.volume * 100) + '%';
+            volumeDisplay.textContent = Math.round((video.volume || 0) * 100) + '%';
             
             if (video.muted || video.volume === 0) {
                 muteToggleBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
@@ -143,27 +589,27 @@
         // ----------------------------------------------------
         if (enterButton) {
              enterButton.addEventListener('click', () => {
-                // 1. สั่งให้วิดีโอเริ่มเล่น
-                video.play().catch(error => {
-                     console.error("Video Playback failed (browser policy):", error);
-                });
+                 // 1. สั่งให้วิดีโอเริ่มเล่น
+                 video.play().catch(error => {
+                      console.error("Video Playback failed (browser policy):", error);
+                 });
 
-                // 2. เปิดเสียงวิดีโอ 
-                video.muted = false;
-                // 3. กำหนดให้ระดับเสียงเป็นค่าเริ่มต้นที่เราตั้งไว้
-                video.volume = currentVolume; 
-                
-                // 4. ซ่อนหน้าปก (ใช้ opacity เพื่อให้เกิด fade effect จาก CSS)
-                if (entryOverlay) {
-                    entryOverlay.style.opacity = '0';
-                    setTimeout(() => {
-                        entryOverlay.style.display = 'none';
-                    }, 500); // 0.5 วินาทีเท่ากับ transition ใน CSS
-                }
+                 // 2. เปิดเสียงวิดีโอ 
+                 video.muted = false;
+                 // 3. กำหนดให้ระดับเสียงเป็นค่าเริ่มต้นที่เราตั้งไว้
+                 video.volume = currentVolume; 
+                 
+                 // 4. ซ่อนหน้าปก (ใช้ opacity เพื่อให้เกิด fade effect จาก CSS)
+                 if (entryOverlay) {
+                     entryOverlay.style.opacity = '0';
+                     setTimeout(() => {
+                         entryOverlay.style.display = 'none';
+                     }, 500); // 0.5 วินาทีเท่ากับ transition ใน CSS
+                 }
 
-                // 5. อัพเดท UI ของปุ่มเสียง
-                updateVolumeDisplay();
-            });
+                 // 5. อัพเดท UI ของปุ่มเสียง
+                 updateVolumeDisplay();
+             });
         }
         
         // ----------------------------------------------------
@@ -214,3 +660,4 @@
 </script>
 </body>
 </html>
+
